@@ -27,7 +27,7 @@ jobs:
 
       - name: Extract version from pom.xml
         id: extract_version
-        run: echo "VERSION=$(xmllint --xpath '/*[local-name()=\"project\"]/*[local-name()=\"version\"]/text()' pom.xml)" >> $GITHUB_ENV
+        run: echo "VERSION=$(xmllint --xpath '/project/version/text()' pom.xml)" >> $GITHUB_ENV
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
