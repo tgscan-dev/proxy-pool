@@ -27,8 +27,7 @@ jobs:
 
       - name: Extract version from pom.xml
         id: extract_version
-        run: echo "VERSION=$(xmllint --xpath '/project/version/text()' pom.xml)" >> $GITHUB_ENV
-
+        run: echo "VERSION=$(xmlstarlet sel -N x='http://maven.apache.org/POM/4.0.0' -t -v '/x:project/x:version' pom.xml)" >> $GITHUB_ENV
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
