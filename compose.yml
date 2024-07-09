@@ -6,7 +6,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./proxy-pool.db:/proxy-pool.db
+      - ./proxy-pool.db:/app/proxy-pool.db
     networks:
       - app-network
 
