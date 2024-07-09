@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./proxy-pool.db:/proxy-pool.db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
