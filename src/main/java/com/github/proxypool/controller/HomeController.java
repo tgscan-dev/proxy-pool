@@ -29,7 +29,6 @@ public class HomeController {
           @RequestParam(value = "page", required = false, defaultValue = "1") int page,
           Model model) {
 
-    // 处理空字符串，将其转换为 null
     if (country != null && country.trim().isEmpty()) {
       country = null;
     }
@@ -39,7 +38,6 @@ public class HomeController {
 
     Page<Proxy> proxies = proxyRepository.findProxies(isAnonymous, country, city, PageRequest.of(page - 1, 20));
 
-    // 格式化日期时间
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     List<ProxyDto> proxyDtos = proxies.getContent().stream()
                                       .map(proxy -> new ProxyDto(
