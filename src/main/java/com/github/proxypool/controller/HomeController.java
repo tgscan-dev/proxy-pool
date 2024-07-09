@@ -45,7 +45,7 @@ public class HomeController {
 
     Page<Proxy> proxies = proxyRepository.findProxies(isAnonymous, country, city, PageRequest.of(page - 1, 20, sort));
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
     List<ProxyDto> proxyDtos = proxies.getContent().stream()
                                       .map(proxy -> new ProxyDto(
                                               proxy.getIpPort(),

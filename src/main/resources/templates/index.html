@@ -89,6 +89,7 @@
             margin-right: 20px;
             text-decoration: none;
         }
+
         form {
             margin-bottom: 25px; /* 20px + 5px */
         }
@@ -104,7 +105,7 @@
     <h1>Proxy Pool</h1>
 
     <form method="get" action="/" class="mb-8">
-    <div>
+        <div>
             Country: <input type="text" name="country" th:value="${country}">
             City: <input type="text" name="city" th:value="${city}">
             Anonymous:
@@ -140,7 +141,7 @@
             <td th:text="${proxy.country}">USA</td>
             <td th:text="${proxy.city}">New York</td>
             <td th:text="${proxy.responseTime}">150ms</td>
-            <td th:text="${proxy.lastCheckTime}">2023-10-01 12:00</td>
+            <td th:text="${proxy.lastCheckTime}" class="last-check-time">2023-10-01 12:00</td>
         </tr>
         </tbody>
     </table>
@@ -155,11 +156,13 @@
                 <span>...</span>
             </li>
             <li th:each="i : ${#numbers.sequence(currentPage - 2 > 1 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
-                <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, sortBy=${sortBy}, page=${i})}" th:text="${i}" th:classappend="${currentPage == i} ? 'active' : ''"></a>
+                <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, sortBy=${sortBy}, page=${i})}"
+                   th:text="${i}" th:classappend="${currentPage == i} ? 'active' : ''"></a>
             </li>
             <li th:if="${currentPage < totalPages - 2}">
                 <span>...</span>
-                <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, sortBy=${sortBy}, page=${totalPages})}" th:text="${totalPages}"></a>
+                <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, sortBy=${sortBy}, page=${totalPages})}"
+                   th:text="${totalPages}"></a>
             </li>
             <li th:if="${currentPage < totalPages}">
                 <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, sortBy=${sortBy}, page=${currentPage + 1})}">Next</a>
@@ -167,6 +170,21 @@
         </ul>
     </div>
 </div>
+<script>
+    function convertToLocalTime(utcTime) {
+        const date = new Date(utcTime);
+        return date.toLocaleString();
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const lastCheckTimeElements = document.querySelectorAll('.last-check-time');
+        lastCheckTimeElements.forEach(function(element) {
+            const utcTime = element.textContent;
+            element.textContent = convertToLocalTime(utcTime);
+        });
+    });
+</script>
+
 </body>
 </html>
 
