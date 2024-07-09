@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,7 +54,8 @@ public class HomeController {
                                               proxy.getCountry(),
                                               proxy.getCity(),
                                               proxy.getResponseTime() + "ms",
-                                              proxy.getLastCheckTime().format(formatter)
+                                              proxy.getLastCheckTime().atZone(ZoneId.systemDefault()).toEpochSecond()
+
                                       ))
                                       .collect(Collectors.toList());
 
@@ -75,9 +77,9 @@ public class HomeController {
     private String country;
     private String city;
     private String responseTime;
-    private String lastCheckTime;
+    private Long lastCheckTime;
 
-    public ProxyDto(String ipPort, String isAnonymous, String country, String city, String responseTime, String lastCheckTime) {
+    public ProxyDto(String ipPort, String isAnonymous, String country, String city, String responseTime, Long lastCheckTime) {
       this.ipPort = ipPort;
       this.isAnonymous = isAnonymous;
       this.country = country;

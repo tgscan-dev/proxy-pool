@@ -1,9 +1,9 @@
 package com.github.proxypool.repository;
 
 import com.github.proxypool.domain.Proxy;
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +16,7 @@ public interface ProxyRepository extends JpaRepository<Proxy, Long> {
   Set<Proxy> findByLastCheckTimeBeforeAndFailCountLessThanEqual(
       LocalDateTime lastCheckTime, long failCount);
 
+  @Transactional
   long deleteByFailCountGreaterThan(long failCount);
 
   Set<Proxy> findByIpPortIn(Collection<String> ipPorts);

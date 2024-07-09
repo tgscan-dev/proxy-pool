@@ -141,7 +141,7 @@
             <td th:text="${proxy.country}">USA</td>
             <td th:text="${proxy.city}">New York</td>
             <td th:text="${proxy.responseTime}">150ms</td>
-            <td th:text="${proxy.lastCheckTime}" class="last-check-time">2023-10-01 12:00</td>
+            <td th:text="${proxy.lastCheckTime}" class="last-check-time">1627849200</td>
         </tr>
         </tbody>
     </table>
@@ -171,20 +171,19 @@
     </div>
 </div>
 <script>
-    function convertToLocalTime(utcTime) {
-        const date = new Date(utcTime);
+    function convertToLocalTime(timestamp) {
+        const date = new Date(timestamp * 1000); // Convert from seconds to milliseconds
         return date.toLocaleString();
     }
 
     document.addEventListener("DOMContentLoaded", function() {
         const lastCheckTimeElements = document.querySelectorAll('.last-check-time');
         lastCheckTimeElements.forEach(function(element) {
-            const utcTime = element.textContent;
-            element.textContent = convertToLocalTime(utcTime);
+            const timestamp = parseInt(element.textContent, 10);
+            element.textContent = convertToLocalTime(timestamp);
         });
     });
 </script>
 
 </body>
 </html>
-
