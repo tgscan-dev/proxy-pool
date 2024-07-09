@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+proxy-pool.db
 ### STS ###
 .apt_generated
 .classpath
