@@ -1,4 +1,5 @@
 # Proxy Pool 🌐
+Preview: https://proxy.tgscan.xyz
 
 A simple, lightweight proxy pool implementation using Spring Boot. This project fetches free proxies from various sources, validates their availability and anonymity, and provides a simple API for accessing them.
 
