@@ -22,8 +22,8 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Install xmllint
-        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+      - name: Install xmlstarlet
+        run: sudo apt-get update && sudo apt-get install -y xmlstarlet
 
       - name: Extract version from pom.xml
         id: extract_version
