@@ -31,4 +31,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: your-dockerhub-username/your-repository-name:${{ env.VERSION }}
+          tags: tgscan/proxy-pool:${{ env.VERSION }}
