@@ -110,8 +110,16 @@
                 <li th:if="${currentPage > 1}">
                     <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, page=${currentPage - 1})}" class="px-3 py-1 bg-gray-300 text-gray-800 hover:bg-gray-400 rounded-l">Previous</a>
                 </li>
-                <li th:each="i : ${#numbers.sequence(1, totalPages)}">
+                <li th:if="${currentPage > 3}">
+                    <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, page=1)}" class="px-3 py-1 bg-gray-300 text-gray-800 hover:bg-gray-400 rounded">1</a>
+                    <span class="px-3 py-1">...</span>
+                </li>
+                <li th:each="i : ${#numbers.sequence(currentPage - 2 > 1 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
                     <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, page=${i})}" th:text="${i}" th:classappend="${currentPage == i} ? 'bg-gray-600 text-white' : 'bg-gray-300 text-gray-800 hover:bg-gray-400'" class="px-3 py-1 rounded"></a>
+                </li>
+                <li th:if="${currentPage < totalPages - 2}">
+                    <span class="px-3 py-1">...</span>
+                    <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, page=${totalPages})}" class="px-3 py-1 bg-gray-300 text-gray-800 hover:bg-gray-400 rounded">${totalPages}</a>
                 </li>
                 <li th:if="${currentPage < totalPages}">
                     <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, page=${currentPage + 1})}" class="px-3 py-1 bg-gray-300 text-gray-800 hover:bg-gray-400 rounded-r">Next</a>

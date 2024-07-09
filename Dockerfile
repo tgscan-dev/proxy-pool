@@ -10,5 +10,5 @@ FROM openjdk:22-slim
 EXPOSE 8080
 
 COPY --from=build /app/target/proxy-pool-0.1.0.jar app.jar
-
+RUN touch proxy-pool.db
 ENTRYPOINT ["java","-jar","/app.jar"]
