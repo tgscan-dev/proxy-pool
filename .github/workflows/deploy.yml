@@ -26,6 +26,6 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
           cd /home/azureuser/proxy-pool
-          docker-compose down
-          docker-compose up --build -d
+          docker compose down
+          docker compose up --build -d
           EOF
