@@ -4,56 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proxy Pool</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f5f5f5;
-            color: #333;
-            font-family: 'Georgia', serif;
+            background-color: #f9f9f9;
+            font-family: 'Times New Roman', serif;
+            color: #222;
         }
-        .header-text {
-            font-family: 'Times New Roman', Times, serif;
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 1em;
+            border-bottom: 2px solid #555;
+            padding-bottom: 0.5em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 20px;
         }
-        .filter-form input, .filter-form select, .filter-form button {
-            border: 1px solid #333;
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #aaa;
+            text-align: left;
         }
-        .filter-form button {
-            background-color: #333;
-            color: #fff;
-        }
-        .filter-form button:hover {
-            background-color: #555;
-        }
-        .table-header {
-            background-color: #e0e0e0;
-            color: #333;
+
+        th {
             font-weight: bold;
         }
-        .table-row {
-            border-bottom: 1px solid #ccc;
+
+        input[type="text"], select {
+            padding: 6px;
+            border: 1px solid #555;
         }
+
+        button {
+            background-color: #eee;
+            border: 1px solid #555;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .pagination ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: inline-flex;
+        }
+
         .pagination a {
-            color: #333;
+            padding: 8px 12px;
+            border: 1px solid #aaa;
+            margin: 0 5px;
+            text-decoration: none;
+            color: #222;
         }
+
         .pagination a:hover {
-            color: #555;
+            background-color: #eee;
         }
+
         .navbar {
             background-color: #333;
             color: #fff;
             padding: 10px;
+            margin-bottom: 20px;
         }
+
         .navbar a {
             color: #fff;
             margin-right: 20px;
             text-decoration: none;
         }
-        .navbar a:hover {
-            text-decoration: underline;
+        form {
+            margin-bottom: 25px; /* 20px + 5px */
         }
+
     </style>
 </head>
 <body>
@@ -61,72 +100,73 @@
     <a href="https://proxy.tgscan.xyz/docs" target="_blank">API Docs</a>
     <a href="https://github.com/tgscan-dev/proxy-pool" target="_blank">GitHub</a>
 </div>
-<div class="container mx-auto p-6">
-    <h1 class="text-3xl header-text text-center">Proxy Pool</h1>
+<div class="container">
+    <h1>Proxy Pool</h1>
 
-    <!-- 过滤表单 -->
-    <form method="get" action="/" class="mb-6 filter-form">
-        <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
-            <input type="text" name="country" placeholder="Country" class="border p-2 rounded bg-white text-gray-800" th:value="${country}">
-            <input type="text" name="city" placeholder="City" class="border p-2 rounded bg-white text-gray-800" th:value="${city}">
-            <select name="isAnonymous" class="border p-2 rounded bg-white text-gray-800">
+    <form method="get" action="/" class="mb-8">
+    <div>
+            Country: <input type="text" name="country" th:value="${country}">
+            City: <input type="text" name="city" th:value="${city}">
+            Anonymous:
+            <select name="isAnonymous">
                 <option value="" th:selected="${isAnonymous == null}">All</option>
                 <option value="true" th:selected="${isAnonymous == true}">Yes</option>
                 <option value="false" th:selected="${isAnonymous == false}">No</option>
             </select>
-            <button type="submit" class="border p-2 rounded">Filter</button>
+            Sort by:
+            <select name="sortBy">
+                <option value="lastCheckTime" th:selected="${sortBy == 'lastCheckTime'}">Last Check Time</option>
+                <option value="responseTime" th:selected="${sortBy == 'responseTime'}">Response Time</option>
+            </select>
+            <button type="submit">Filter</button>
         </div>
     </form>
 
-    <div class="shadow-md rounded-lg overflow-hidden">
-        <table class="min-w-full bg-white">
-            <thead class="table-header">
-            <tr>
-                <th class="w-1/6 py-3 px-4 text-left">IP:Port</th>
-                <th class="w-1/6 py-3 px-4 text-left">Anonymous</th>
-                <th class="w-1/6 py-3 px-4 text-left">Country</th>
-                <th class="w-1/6 py-3 px-4 text-left">City</th>
-                <th class="w-1/6 py-3 px-4 text-left">Response Time</th>
-                <th class="w-1/6 py-3 px-4 text-left">Last Check Time</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="proxy : ${proxies}" class="table-row">
-                <td class="w-1/6 py-3 px-4 text-left" th:text="${proxy.ipPort}">192.168.1.1:8080</td>
-                <td class="w-1/6 py-3 px-4 text-left" th:text="${proxy.isAnonymous}">Yes</td>
-                <td class="w-1/6 py-3 px-4 text-left" th:text="${proxy.country}">USA</td>
-                <td class="w-1/6 py-3 px-4 text-left" th:text="${proxy.city}">New York</td>
-                <td class="w-1/6 py-3 px-4 text-left" th:text="${proxy.responseTime}">150ms</td>
-                <td class="w-1/6 py-3 px-4 text-left" th:text="${proxy.lastCheckTime}">2024-07-09 14:34</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>IP:Port</th>
+            <th>Anonymous</th>
+            <th>Country</th>
+            <th>City</th>
+            <th>Response Time</th>
+            <th>Last Check Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="proxy : ${proxies}">
+            <td th:text="${proxy.ipPort}">192.168.1.1:8080</td>
+            <td th:text="${proxy.isAnonymous}">Yes</td>
+            <td th:text="${proxy.country}">USA</td>
+            <td th:text="${proxy.city}">New York</td>
+            <td th:text="${proxy.responseTime}">150ms</td>
+            <td th:text="${proxy.lastCheckTime}">2023-10-01 12:00</td>
+        </tr>
+        </tbody>
+    </table>
 
-    <!-- 分页导航 -->
-    <div class="mt-6">
-        <nav class="flex justify-center pagination">
-            <ul class="inline-flex items-center space-x-2">
-                <li th:if="${currentPage > 1}">
-                    <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, page=${currentPage - 1})}" class="px-3 py-1 bg-gray-300 text-gray-800 hover:bg-gray-400 rounded-l">Previous</a>
-                </li>
-                <li th:if="${currentPage > 3}">
-                    <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, page=1)}" class="px-3 py-1 bg-gray-300 text-gray-800 hover:bg-gray-400 rounded">1</a>
-                    <span class="px-3 py-1">...</span>
-                </li>
-                <li th:each="i : ${#numbers.sequence(currentPage - 2 > 1 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
-                    <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, page=${i})}" th:text="${i}" th:classappend="${currentPage == i} ? 'bg-gray-600 text-white' : 'bg-gray-300 text-gray-800 hover:bg-gray-400'" class="px-3 py-1 rounded"></a>
-                </li>
-                <li th:if="${currentPage < totalPages - 2}">
-                    <span class="px-3 py-1">...</span>
-                    <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, page=${totalPages})}" class="px-3 py-1 bg-gray-300 text-gray-800 hover:bg-gray-400 rounded">${totalPages}</a>
-                </li>
-                <li th:if="${currentPage < totalPages}">
-                    <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, page=${currentPage + 1})}" class="px-3 py-1 bg-gray-300 text-gray-800 hover:bg-gray-400 rounded-r">Next</a>
-                </li>
-            </ul>
-        </nav>
+    <div class="pagination">
+        <ul>
+            <li th:if="${currentPage > 1}">
+                <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, sortBy=${sortBy}, page=${currentPage - 1})}">Previous</a>
+            </li>
+            <li th:if="${currentPage > 3}">
+                <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, sortBy=${sortBy}, page=1)}">1</a>
+                <span>...</span>
+            </li>
+            <li th:each="i : ${#numbers.sequence(currentPage - 2 > 1 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
+                <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, sortBy=${sortBy}, page=${i})}" th:text="${i}" th:classappend="${currentPage == i} ? 'active' : ''"></a>
+            </li>
+            <li th:if="${currentPage < totalPages - 2}">
+                <span>...</span>
+                <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, sortBy=${sortBy}, page=${totalPages})}" th:text="${totalPages}"></a>
+            </li>
+            <li th:if="${currentPage < totalPages}">
+                <a th:href="@{/(isAnonymous=${isAnonymous}, country=${country}, city=${city}, sortBy=${sortBy}, page=${currentPage + 1})}">Next</a>
+            </li>
+        </ul>
     </div>
 </div>
 </body>
 </html>
+

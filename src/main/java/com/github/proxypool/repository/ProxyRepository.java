@@ -25,7 +25,7 @@ public interface ProxyRepository extends JpaRepository<Proxy, Long> {
           + "(:isAnonymous IS NULL OR p.isAnonymous = :isAnonymous) AND "
           + "(:country IS NULL OR p.country = :country) AND "
           + "(:city IS NULL OR p.city = :city) AND "
-          + "p.failCount = 0 order by p.responseTime asc")
+          + "p.failCount = 0")
   Page<Proxy> findProxies(
       @Param("isAnonymous") Boolean isAnonymous,
       @Param("country") String country,

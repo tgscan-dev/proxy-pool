@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,8 @@ import java.util.stream.Collectors;
 @Controller
 public class HomeController {
 
-  @Autowired private ProxyRepository proxyRepository;
+  @Autowired
+  private ProxyRepository proxyRepository;
 
   @GetMapping("/")
   public String home(
@@ -27,6 +29,7 @@ public class HomeController {
           @RequestParam(value = "country", required = false) String country,
           @RequestParam(value = "city", required = false) String city,
           @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+          @RequestParam(value = "sortBy", required = false, defaultValue = "lastCheckTime") String sortBy,
           Model model) {
 
     if (country != null && country.trim().isEmpty()) {
@@ -36,7 +39,11 @@ public class HomeController {
       city = null;
     }
 
-    Page<Proxy> proxies = proxyRepository.findProxies(isAnonymous, country, city, PageRequest.of(page - 1, 20));
+    Sort sort = sortBy.equals("responseTime")
+            ? Sort.by(Sort.Order.asc("responseTime"))
+            : Sort.by(Sort.Order.desc("lastCheckTime"));
+
+    Page<Proxy> proxies = proxyRepository.findProxies(isAnonymous, country, city, PageRequest.of(page - 1, 20, sort));
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     List<ProxyDto> proxyDtos = proxies.getContent().stream()
@@ -56,6 +63,7 @@ public class HomeController {
     model.addAttribute("isAnonymous", isAnonymous);
     model.addAttribute("country", country);
     model.addAttribute("city", city);
+    model.addAttribute("sortBy", sortBy);
     return "index";
   }
 
@@ -77,6 +85,5 @@ public class HomeController {
       this.responseTime = responseTime;
       this.lastCheckTime = lastCheckTime;
     }
-
   }
 }
