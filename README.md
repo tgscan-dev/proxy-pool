@@ -1,11 +1,15 @@
 # Proxy Pool 🌐
 Preview: https://proxy.tgscan.xyz
 
-A simple, lightweight proxy pool implementation using Spring Boot. This project fetches free proxies from various sources, validates their availability and anonymity, and provides a simple API for accessing them.
+A simple, lightweight proxy pool implementation. This project fetches free proxies from various sources, validates their availability and anonymity, and provides a simple API for accessing them.
 
-## Features ✨
+## Docker Quick Start 🚀
 
-You got it! Here's the updated feature list with the Java coroutines advantage:
+You can quickly start the application using Docker:
+
+```bash
+docker run -d -p 8080:8080 tgscan/proxy-pool
+```
 
 ## Features ✨
 
@@ -19,24 +23,28 @@ You got it! Here's the updated feature list with the Java coroutines advantage:
 
 ## Getting Started 🚀
 
-1. **Prerequisites:**
-   * Java 22 or later
-   * Maven
+### Prerequisites
 
-2. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/tgscan-dev/proxy-pool
-   cd proxy-pool
-   ```
+* Java 22 or later
+* Maven
 
-3. **Configuration:**
-    * **Seed Websites:** Update the `proxy.http.seed` property in your `application.properties` file with the URLs of websites that list free proxies.
+### Clone the Repository
 
-4. **Build and Run:**
-   ```bash
-   mvn clean install
-   mvn spring-boot:run
-   ```
+```bash
+git clone https://github.com/tgscan-dev/proxy-pool
+cd proxy-pool
+```
+
+### Configuration
+
+* **Seed Websites:** Update the `proxy.http.seed` property in your `application.properties` file with the URLs of websites that list free proxies.
+
+### Build and Run
+
+```bash
+mvn clean install
+mvn spring-boot:run
+```
 
 ## API Usage 💻
 
@@ -65,3 +73,4 @@ Contributions are welcome! Feel free to open issues or pull requests.
 ## License 📄
 
 This project is licensed under the MIT License.
+
