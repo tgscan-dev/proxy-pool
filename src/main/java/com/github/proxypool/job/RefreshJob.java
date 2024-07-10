@@ -41,7 +41,7 @@ public class RefreshJob {
         .start();
   }
 
-  private void doRefresh() {
+  private void doRefresh() throws InterruptedException {
     log.info("Refresh job started");
     var proxies =
         proxyRepository.findByLastCheckTimeBeforeAndFailCountLessThanEqual(
@@ -61,6 +61,11 @@ public class RefreshJob {
           dbProxy.setResponseTime(proxy.getResponseTime());
           dbProxy.setFailCount(fail);
         });
+    if(proxies.isEmpty()){
+        log.info("No proxies to check");
+        TimeUnit.SECONDS.sleep(5);
+        return;
+    }
     log.info(
         "Checked {} proxies, {} available",
         hostPorts.size(),
