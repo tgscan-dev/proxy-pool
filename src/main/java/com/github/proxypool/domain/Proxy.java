@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 @Entity
@@ -28,8 +29,8 @@ public class Proxy {
 	private String country;
 	private String city;
 	private long responseTime;
-	private LocalDateTime lastCheckTime;
-	private LocalDateTime firstCheckTime;
+	private ZonedDateTime lastCheckTime;
+	private ZonedDateTime firstCheckTime;
 	private long failCount;
 
 

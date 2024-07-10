@@ -3,11 +3,15 @@ package com.github.proxypool.job;
 import com.github.proxypool.domain.Proxy;
 import com.github.proxypool.repository.ProxyRepository;
 import com.github.proxypool.service.ProxyChecker;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -17,25 +21,50 @@ public class RefreshJob {
   @Autowired private ProxyChecker proxyChecker;
   @Autowired private ProxyRepository proxyRepository;
 
-  @Scheduled(fixedRate = 1000 * 60 * 3)
+  @EventListener(ApplicationReadyEvent.class)
   public void refresh() {
 
+    new Thread(
+            () -> {
+              while (true) {
+                  try {
+                      doRefresh();
+                  } catch (Exception e) {
+                      log.error("Error in refresh job", e);
+	                  try {
+		                  TimeUnit.SECONDS.sleep(5);
+	                  } catch (InterruptedException _) {
+	                  }
+                  }
+              }
+            })
+        .start();
+  }
+
+  private void doRefresh() {
     log.info("Refresh job started");
     var proxies =
         proxyRepository.findByLastCheckTimeBeforeAndFailCountLessThanEqual(
-            LocalDateTime.now().minusMinutes(5), 5);
+            ZonedDateTime.now().minusMinutes(5),
+            5,
+            PageRequest.of(0, 500, Sort.by(Sort.Direction.ASC, "lastCheckTime")));
+
     var hostPorts2proxy =
         proxies.stream().collect(Collectors.toMap(Proxy::getIpPort, proxy -> proxy));
     var hostPorts = proxies.stream().map(Proxy::getIpPort).collect(Collectors.toSet());
-    var availableProxies = proxyChecker.check(hostPorts);
-    availableProxies.forEach(
+    var checked = proxyChecker.check(hostPorts);
+    checked.forEach(
         proxy -> {
           var dbProxy = hostPorts2proxy.get(proxy.getIpPort());
           var fail = proxy.getResponseTime() == -1 ? dbProxy.getFailCount() + 1 : 0;
-          dbProxy.setLastCheckTime(LocalDateTime.now());
+          dbProxy.setLastCheckTime(ZonedDateTime.now());
           dbProxy.setResponseTime(proxy.getResponseTime());
           dbProxy.setFailCount(fail);
         });
+    log.info(
+        "Checked {} proxies, {} available",
+        hostPorts.size(),
+        checked.stream().filter(x -> x.getResponseTime() != -1).count());
     proxyRepository.saveAll(proxies);
   }
 }

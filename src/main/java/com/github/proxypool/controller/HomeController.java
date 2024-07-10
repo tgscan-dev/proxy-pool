@@ -54,7 +54,7 @@ public class HomeController {
                                               proxy.getCountry(),
                                               proxy.getCity(),
                                               proxy.getResponseTime() + "ms",
-                                              proxy.getLastCheckTime().atZone(ZoneId.systemDefault()).toEpochSecond()
+                                              proxy.getLastCheckTime().toEpochSecond()
 
                                       ))
                                       .collect(Collectors.toList());

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy.Type;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -95,7 +96,7 @@ public class ProxyChecker {
                             .map(AbstractNamedRecord::getName)
                             .orElse("Unknown"))
             .setResponseTime(rt)
-            .setLastCheckTime(LocalDateTime.now());
+            .setLastCheckTime(ZonedDateTime.now());
   }
 
   private Pair<Long, Boolean> testProxy(OkHttpClient client, String url) {

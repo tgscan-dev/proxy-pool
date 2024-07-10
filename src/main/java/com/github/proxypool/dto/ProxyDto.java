@@ -2,6 +2,8 @@ package com.github.proxypool.dto;
 
 import com.github.proxypool.domain.Proxy;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -13,7 +15,7 @@ public class ProxyDto {
   private String country;
   private String city;
   private long responseTime;
-  private LocalDateTime lastCheckTime;
+  private ZonedDateTime lastCheckTime;
 
   public static Proxy toProxy(ProxyDto proxyDto) {
     Proxy proxy = new Proxy();
@@ -24,7 +26,7 @@ public class ProxyDto {
     proxy.setResponseTime(proxyDto.getResponseTime());
     proxy.setLastCheckTime(proxyDto.getLastCheckTime());
     proxy.setFailCount(proxyDto.getResponseTime() == -1 ? 1 : 0);
-    proxy.setFirstCheckTime(LocalDateTime.now());
+    proxy.setFirstCheckTime(ZonedDateTime.now());
     return proxy;
   }
 }
