@@ -6,7 +6,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - proxy-pool-data:/app
+      - proxy-pool-data:/db
     networks:
       - app-network
 
